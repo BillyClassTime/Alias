@@ -1,0 +1,151 @@
+# --- SEGURIDAD CRIPTOGRÁFICA (VITAL) ---
+# Nunca subas tus llaves privadas o frases semilla
+*.json
+!package.json
+!package-lock.json
+!tsconfig.json
+!services/signal/test/fixtures/*.json
+!services/observer/src/test/fixtures/mock*.json
+!UI_UX/prototypes/n8n-runbooks/*.json
+n8n/running_dev/scenarios/tmp*.json
+n8n/running_dev/supervisor/*
+!n8n/running_dev/scenarios/*.e2e-dev.json
+
+# configs yml locales
+signal.local.yml
+
+# Si usas archivos keypair de solana (.json) específicamente:
+*-keypair.json
+wallet.json
+id.json
+secrets/
+
+# --- VARIABLES DE ENTORNO ---
+.env
+.env.local
+.env.dev
+.env.test
+.env.production
+.env*.local
+UI_UX/appsettings.Local.json
+!UI_UX/appsettings.Local.example.json
+
+# --- DEPENDENCIAS ---
+node_modules/
+jspm_packages/
+web_modules/
+
+# --- ARCHIVOS DE COMPILACIÓN (TypeScript/Babel) ---
+dist/
+build/
+out/
+*.tsbuildinfo
+
+# --- ESTADO OPERATIVO LOCAL (no deployar) ---
+operational-guidance/evidence/runbooks/
+runbooks/evidence/
+runbooks/evidence/clean/
+runbooks/**/.runbook-session.json
+runbooks/**/*.pid
+runbooks/**/*.jsonl
+services/operational-store/bootstrap/seeds/
+services/operational-store/bootstrap/evidence/
+
+# --- LOGS Y DEBUGGING ---
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.jsonl
+
+# --- SISTEMA Y EDITORES ---
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# --- PYTHON ---
+__pycache__/
+*.pyc
+*.pyo
+services/calibrator/reports/
+runbooks/support/.venv/
+
+# --- CACHÉ Y TEMPORALES ---
+.npm
+.eslintcache
+.stylelintcache
+.cache
+.parcel-cache
+.next
+.nuxt
+
+# --- .NET / BLAZOR (AÑADIDOS) ---
+# Build artifacts
+bin/
+obj/
+
+# Razor Components generated outputs
+*.g.cs
+*.g.cshtml.cs
+*.razor.g.cs
+*.css.scoped.css
+*.rz.scp.css
+
+# ASP.NET Core auto-generated
+aspnet-client/
+
+# Auto-generated during restore
+globalpackages/
+
+# Static asset compression outputs
+wwwroot/*.gz
+wwwroot/*.br
+
+# Backup / temp / crash
+*.bak
+*.tmp
+*.tlog
+*.pid
+*.dmp
+
+# Rider settings (no duplicado con .idea/)
+*.DotSettings.user
+
+# OS extras
+Icon?
+._*
+$RECYCLE.BIN/
+
+#Agents
+.codex
+
+!n8n/workflows/
+!n8n/workflows/*.json
+!n8n/quality/contracts/
+!n8n/quality/contracts/*.json
+!n8n/quality/fixtures/
+!n8n/quality/fixtures/**/*.json
+!n8n/quality/rules/
+!n8n/quality/rules/*.json
+n8n/quality/reports/
+n8n/scripts/reports/
+n8n/tmp/
+n8n/reporte-*.json
+n8n/scripts/reporte-*.json
+n8n/validate-input.json
+n8n/validate-output.json
+
+tmp/*
+UI_UX/data/radar/simbolos-cryptomonedas-master.csv
+services/calibrator/.venv/*
+n8n/running_dev/*.html
+n8n/running_dev/tmp*
+n8n/running_dev/cycle-evidence/
+runbooks/logsEcosystem
