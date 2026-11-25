@@ -12,7 +12,7 @@ The idea is similar to Microsoft's `aka.ms`, but using your own domain.
 
 ## Architecture
 
-
+![](img/01.png)
 
 No database is required. Since `aliases.json` is read dynamically, aliases can be added or changed without rebuilding the application or redeploying the container.
 
