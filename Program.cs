@@ -11,6 +11,11 @@ builder.Services
     .AddRazorComponents()
     .AddInteractiveServerComponents();
 
+builder.Services.AddHttpClient("BillyClassTime", client =>
+{
+    client.BaseAddress = new Uri("http://localhost:5258");
+});
+
 builder.Services.AddOpenApi();
 
 var aliasesUrl = builder.Configuration["Aliases:Url"]
