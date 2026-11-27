@@ -1,10 +1,15 @@
 using Azure.Core;
+using Azure.Identity;
 using Azure.Storage.Blobs;
 using System.Text.Json;
-using Azure.Identity;
 using Scalar.AspNetCore;
+using aliasbillyclasstime.Components;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services
+    .AddRazorComponents()
+    .AddInteractiveServerComponents();
 
 builder.Services.AddOpenApi();
 
@@ -19,6 +24,10 @@ TokenCredential credential = builder.Environment.IsDevelopment()
 var blobClient = new BlobClient(new Uri(aliasesUrl),credential);
 
 var app = builder.Build();
+
+app.UseDefaultFiles();
+app.UseStaticFiles();
+app.UseAntiforgery();
 
 if (app.Environment.IsDevelopment())
 {
@@ -250,6 +259,9 @@ app.MapGet("/{alias}", async (string alias) =>
 
     return Results.NotFound("Alias no encontrado");
 });
+
+app.MapRazorComponents<App>()
+    .AddInteractiveServerRenderMode();
 
 app.Run();
 

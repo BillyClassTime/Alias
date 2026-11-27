@@ -1,0 +1,31 @@
+body {
+    min-height: 100vh;
+}
+
+.navbar-brand {
+    font-weight: 700;
+}
+
+.alias-url {
+    overflow-wrap: anywhere;
+}
+
+.alias-card {
+    transition: box-shadow 0.15s ease-in-out;
+}
+
+.alias-card:hover {
+    box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .10) !important;
+}
+
+@media (max-width: 575.98px) {
+
+    #newAliasButton {
+        width: 100%;
+    }
+
+    .alias-actions .btn {
+        flex: 1;
+    }
+
+}
