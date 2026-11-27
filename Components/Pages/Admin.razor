@@ -1,6 +1,6 @@
 @page "/admin"
 @rendermode Microsoft.AspNetCore.Components.Web.RenderMode.InteractiveServer
-@inject IHttpClientFactory HttpClientFactory
+@using aliasbillyclasstime.Components.Admin
 
 <PageTitle>BillyClassTime Alias Manager</PageTitle>
 
@@ -9,7 +9,6 @@
     align-items-sm-center mb-4">
 
     <div>
-
         <h1 class="h3 mb-1">
             Alias
         </h1>
@@ -17,8 +16,8 @@
         <p class="text-body-secondary mb-0">
             Administración de redirecciones
         </p>
-
     </div>
+
     @if (!IsEditing)
     {
         <button type="button" class="btn btn-primary" @onclick="ShowNewAliasForm">
@@ -30,277 +29,28 @@
 
 @if (showNewAliasForm)
 {
-    <div class="card shadow-sm mb-4">
-        <div class="card-body">
-
-            <h2 class="h5 mb-3">Nuevo alias</h2>
-
-            <div class="mb-3">
-                <label for="newAlias" class="form-label">Alias</label>
-                <input id="newAlias" type="text" class="form-control" placeholder="Ej. az-104" @bind="newAlias" autofocus />
-            </div>
-
-            <div class="mb-3">
-                <label for="newUrl" class="form-label">Destino</label>
-                <input id="newUrl" type="url" class="form-control bg-dark text-white" placeholder="https://..."
-                       @bind="newUrl" />
-            </div>
-
-            <div class="d-flex gap-2 justify-content-end">
-                <button type="button" class="btn btn-primary" @onclick="CreateAlias">
-                    Guardar
-                </button>
-
-                <button type="button" class="btn btn-outline-secondary" @onclick="CancelNewAlias">
-                    Cancelar
-                </button>
-            </div>
-
-        </div>
-    </div>
+    <AliasCreate @bind-Alias="newAlias"
+                @bind-Url="newUrl"
+                ErrorMessage="@createError"
+                OnSave="CreateAlias"
+                OnCancel="CancelNewAlias" />
 }
 
 @if (!IsEditing)
 {
-    <div class="card shadow-sm mb-4">
-
-        <div class="card-body">
-
-            <label for="search" class="form-label">
-
-                Buscar alias
-
-            </label>
-
-            <input id="search" type="search" class="form-control" placeholder="Escribe parte del alias..."
-                   @bind="searchText" @bind:event="oninput" />
-
-        </div>
-
-    </div>
+    <AliasSearch @bind-SearchText="searchText" />
 }
-<div class="card shadow-sm">
-    <div class="card-body">
-        @if (aliases is null)
-        {
-            <div class="text-center py-5">
-                <div class="spinner-border text-primary" role="status">
-                    <span class="visually-hidden">Cargando...</span>
-                </div>
 
-                <p class="mt-3 mb-0 text-body-secondary">
-                    Cargando alias...
-                </p>
-            </div>
-        }
-        else
-        {
-            <p>Alias encontrados: @FilteredAliases.Count()</p>
-
-            @foreach (var item in FilteredAliases)
-            {
-                <div class="border-bottom py-3">
-                    <div class="row align-items-center g-3">
-
-                        <div class="col-12 col-md-3">
-                            <strong>@item.Key</strong>
-                        </div>
-
-                        @if (editingAlias == item.Key)
-                        {
-                            <div class="col-12 col-md-7">
-                                <input type="url" class="form-control bg-dark text-white" @bind="editUrl" autofocus />
-                            </div>
-
-                            <div class="col-12 col-md-2">
-                                <div class="d-flex gap-2 justify-content-md-end">
-
-                                    <button type="button" class="btn btn-primary btn-sm" @onclick="SaveEdit">
-                                        Guardar
-                                    </button>
-
-                                    <button type="button" class="btn btn-outline-secondary btn-sm" @onclick="CancelEdit">
-                                        Cancelar
-                                    </button>
-
-                                </div>
-                            </div>
-                        }
-                        else
-                        {
-                            <div class="col-12 col-md-7">
-                                <div class="bg-dark text-light rounded px-3 py-2 text-break">
-                                    @item.Value
-                                </div>
-                            </div>
-
-                            <div class="col-12 col-md-2">
-                                @if (!IsEditing)
-                                {
-                                    <div class="d-flex gap-2 justify-content-md-end">
-
-                                        <button type="button" class="btn btn-outline-primary btn-sm"
-                                                @onclick="() => EditAlias(item.Key, item.Value)">
-                                            Editar
-                                        </button>
-
-                                        <button type="button" class="btn btn-outline-danger btn-sm"
-                                                @onclick="() => ConfirmDelete(item.Key)">
-                                            Eliminar
-                                        </button>
-
-                                    </div>
-                                }
-                            </div>
-                        }
-
-                    </div>
-                    @if (aliasToDelete == item.Key)
-                    {
-                        <div class="alert alert-danger mt-3 mb-0">
-                            <div class="d-flex flex-column flex-sm-row
-                                justify-content-between align-items-sm-center gap-3">
-
-                                <span>
-                                    ¿Eliminar el alias <strong>@item.Key</strong>?
-                                </span>
-
-                                <div class="d-flex gap-2">
-                                    <button type="button" class="btn btn-danger btn-sm" @onclick="DeleteAlias">
-                                        Sí, eliminar
-                                    </button>
-
-                                    <button type="button" class="btn btn-secondary btn-sm" @onclick="CancelDelete">
-                                        Cancelar
-                                    </button>
-                                </div>
-
-                            </div>
-                        </div>
-                    }
-                </div>
-            }
-        }
-    </div>
-</div>
-
-@code {
-    private Dictionary<string, string>? aliases;
-
-    private bool IsEditing =>
-      showNewAliasForm ||
-      editingAlias is not null ||
-      aliasToDelete is not null;
-    private string? editingAlias;
-    private string editUrl = "";
-    private string newAlias = "";
-    private string newUrl = "";
-    private string searchText = "";
-    private string? aliasToDelete;
-    private bool showNewAliasForm = false;
-    protected override async Task OnInitializedAsync()
-    {
-        var http = HttpClientFactory.CreateClient("BillyClassTime");
-
-        aliases = await http.GetFromJsonAsync<Dictionary<string, string>>("/api/aliases");
-    }
-    private IEnumerable<KeyValuePair<string, string>> FilteredAliases =>
-    aliases is null
-        ? Enumerable.Empty<KeyValuePair<string, string>>()
-        : aliases.Where(a =>
-            a.Key.Contains(searchText, StringComparison.OrdinalIgnoreCase));
-    private void ShowNewAliasForm()
-    {
-        showNewAliasForm = true;
-    }
-    private async Task CreateAlias()
-    {
-        var http = HttpClientFactory.CreateClient("BillyClassTime");
-
-        var response = await http.PostAsJsonAsync(
-            "/api/aliases",
-            new
-            {
-                Alias = newAlias,
-                Url = newUrl
-            });
-
-        if (response.IsSuccessStatusCode)
-        {
-            aliases ??= new Dictionary<string, string>();
-
-            aliases[newAlias] = newUrl;
-
-            newAlias = "";
-            newUrl = "";
-            showNewAliasForm = false;
-        }
-    }
-    private void CancelNewAlias()
-    {
-        newAlias = "";
-        newUrl = "";
-        showNewAliasForm = false;
-    }
-    private void EditAlias(string alias, string url)
-    {
-        editingAlias = alias;
-        editUrl = url;
-    }
-    private void CancelEdit()
-    {
-        editingAlias = null;
-        editUrl = "";
-    }
-    private async Task SaveEdit()
-    {
-        if (editingAlias is null)
-            return;
-
-        var http = HttpClientFactory.CreateClient("BillyClassTime");
-
-        var response = await http.PutAsJsonAsync(
-            $"/api/aliases/{Uri.EscapeDataString(editingAlias)}",
-            new
-            {
-                Url = editUrl
-            });
-
-        if (response.IsSuccessStatusCode)
-        {
-            if (aliases is not null)
-            {
-                aliases[editingAlias] = editUrl;
-            }
-
-            editingAlias = null;
-            editUrl = "";
-        }
-    }
-    private void ConfirmDelete(string alias)
-    {
-        aliasToDelete = alias;
-    }
-    private void CancelDelete()
-    {
-        aliasToDelete = null;
-    }
-    private async Task DeleteAlias()
-    {
-        if (aliasToDelete is null)
-            return;
-
-        var http = HttpClientFactory.CreateClient("BillyClassTime");
-
-        var alias = aliasToDelete;
-
-        var response = await http.DeleteAsync(
-            $"/api/aliases/{Uri.EscapeDataString(alias)}");
-
-        if (response.IsSuccessStatusCode)
-        {
-            aliases?.Remove(alias);
-            aliasToDelete = null;
-        }
-    }
-}
+<AliasList Aliases="FilteredAliases"
+           EditingAlias="@editingAlias"
+           @bind-EditUrl="editUrl"
+           AliasToDelete="@aliasToDelete"
+           IsOperationActive="@IsEditing"
+           EditError="@editError"
+           DeleteError="@deleteError"
+           OnEdit="HandleEdit"
+           OnSaveEdit="SaveEdit"
+           OnCancelEdit="CancelEdit"
+           OnDelete="ConfirmDelete"
+           OnConfirmDelete="DeleteAlias"
+           OnCancelDelete="CancelDelete" />

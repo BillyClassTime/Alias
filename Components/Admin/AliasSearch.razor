@@ -1,0 +1,43 @@
+@namespace aliasbillyclasstime.Components.Admin
+
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+
+        <label for="search" class="form-label">
+            Buscar alias
+        </label>
+
+        <input id="search"
+               type="search"
+               class="form-control"
+               placeholder="Escribe parte del alias..."
+               value="@SearchText"
+               @oninput="OnSearchInput"
+               @ref="searchInput" />
+
+    </div>
+</div>
+
+@code {
+    private ElementReference searchInput;
+
+    [Parameter]
+    public string SearchText { get; set; } = "";
+
+    [Parameter]
+    public EventCallback<string> SearchTextChanged { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await searchInput.FocusAsync();
+        }
+    }
+
+    private Task OnSearchInput(ChangeEventArgs e)
+    {
+        return SearchTextChanged.InvokeAsync(
+            e.Value?.ToString() ?? "");
+    }
+}

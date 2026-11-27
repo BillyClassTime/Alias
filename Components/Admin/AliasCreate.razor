@@ -1,0 +1,104 @@
+@namespace aliasbillyclasstime.Components.Admin
+
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+
+        <h2 class="h5 mb-3">Nuevo alias</h2>
+
+        @if (!string.IsNullOrWhiteSpace(ErrorMessage))
+        {
+            <div class="alert alert-danger" role="alert">
+                @ErrorMessage
+            </div>
+        }
+
+        <div class="mb-3">
+            <label for="newAlias" class="form-label">
+                Alias
+            </label>
+
+            <input id="newAlias"
+                   type="text"
+                   class="form-control"
+                   placeholder="Ej. az-104"
+                   value="@Alias"
+                   @oninput="OnAliasInput"
+                   @ref="aliasInput" />
+        </div>
+
+        <div class="mb-3">
+            <label for="newUrl" class="form-label">
+                Destino
+            </label>
+
+            <input id="newUrl"
+                   type="url"
+                   class="form-control bg-dark text-white"
+                   placeholder="https://..."
+                   value="@Url"
+                   @oninput="OnUrlInput" />
+        </div>
+
+        <div class="d-flex gap-2 justify-content-end">
+
+            <button type="button"
+                    class="btn btn-primary"
+                    @onclick="OnSave">
+                Guardar
+            </button>
+
+            <button type="button"
+                    class="btn btn-outline-secondary"
+                    @onclick="OnCancel">
+                Cancelar
+            </button>
+
+        </div>
+
+    </div>
+</div>
+
+@code {
+    private ElementReference aliasInput;
+
+    [Parameter]
+    public string Alias { get; set; } = "";
+
+    [Parameter]
+    public EventCallback<string> AliasChanged { get; set; }
+
+    [Parameter]
+    public string Url { get; set; } = "";
+
+    [Parameter]
+    public EventCallback<string> UrlChanged { get; set; }
+
+    [Parameter]
+    public string? ErrorMessage { get; set; }
+
+    [Parameter]
+    public EventCallback OnSave { get; set; }
+
+    [Parameter]
+    public EventCallback OnCancel { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await aliasInput.FocusAsync();
+        }
+    }
+
+    private Task OnAliasInput(ChangeEventArgs e)
+    {
+        return AliasChanged.InvokeAsync(
+            e.Value?.ToString() ?? "");
+    }
+
+    private Task OnUrlInput(ChangeEventArgs e)
+    {
+        return UrlChanged.InvokeAsync(
+            e.Value?.ToString() ?? "");
+    }
+}
