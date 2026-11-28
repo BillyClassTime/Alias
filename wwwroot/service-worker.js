@@ -3,13 +3,12 @@
 const cacheName = "billyclasstime-alias-v1";
 
 const appShell = [
-    "/admin",
     "/manifest.webmanifest",
     "/admin/app.css",
     "/admin/lib/bootstrap/css/bootstrap.min.css",
     "/admin/lib/bootstrap/js/bootstrap.bundle.min.js",
-    "/icons/icon-192.png",
-    "/icons/icon-512.png"
+    "/pwa-assets/icon-192.png",
+    "/pwa-assets/icon-512.png"
 ];
 
 self.addEventListener("install", event => {
