@@ -5,6 +5,7 @@ using Scalar.AspNetCore;
 using aliasbillyclasstime.Components;
 using aliasbillyclasstime.Endpoints;
 using aliasbillyclasstime.Services;
+using aliasbillyclasstime.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -44,6 +45,10 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
     app.MapScalarApiReference();
+}
+else
+{
+    app.UseMiddleware<EntraAdminMiddleware>();
 }
 
 app.MapAliasEndpoints();    
